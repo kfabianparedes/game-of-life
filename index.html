@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Juego de la Vida</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+    <div class="container">
+
+        <nav class="container__sidebar">
+            <button class="container__sidebar__button" id="btnStart">Inicio</button>
+            <button class="container__sidebar__button" id="btnRestart">Reiniciar</button>
+            <button class="container__sidebar__button" id="btnRules">Instrucciones</button>
+        </nav>
+    
+        <div class="container__grid">
+            <div class="container__grid__header">
+                <header>El juego de la vida de Conway</header>
+            </div>
+    
+            <div class="container__grid__body">
+                <div class="cuadricula"></div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Modales para instrucciones y para empezar el juego -->
+    <section id="modal-start" class="modal">
+        <div class="modal__container">
+            <h2 class="modal__title">¡Bienvenido al juego!</h2>
+            <hr class="modal__divider">
+            <div class="modal__body">
+                <button id="start-random-game" class="modal__button">Partida Aleatoria</button>
+                <button id="start-custom-game" class="modal__button">Partida Normal</button>
+            </div>
+            <hr class="modal__divider">
+            <a id="close-modal-start" href="#" class="modal__close">Cerrar</a>
+        </div>
+    </section>
+
+    <section id="modal-rules"  class="modal">
+        <div class="modal__container">
+            <img src="assets/images/instrucciones.svg" alt="modal_img" class="modal__img">
+            <h2 class="modal__title">¡Instrucciones del juego!</h2>
+            <p class="modal__paragraph">Lorem ipsum dolor sit amet consectetur adipisicing elit. 
+            Dolorum, sit eius possimus sint architecto incidunt nesciunt non commodi fugiat 
+            dolore optio vitae, alias dignissimos rem accusamus numquam, 
+            ad necessitatibus dolor.</p>
+            <hr class="modal__divider">
+            <a id="close-modal-rules" href="#" class="modal__close">Cerrar</a>
+        </div>
+    </section>
+
+    <script type="module" src="assets/js/index.js"></script>
+
+</body>
+</html>

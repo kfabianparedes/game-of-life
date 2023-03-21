@@ -1,0 +1,108 @@
+
+.modal{
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #111111bd;
+    display: flex;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .3s;
+    --transform: translateY(-100vh);
+    --transition: transform .4s;
+}
+
+.modal--show{
+    opacity: 1;
+    pointer-events: unset;
+    transition: opacity .3s .4s;
+    --transform: translateY(0);
+    --transition: transform .3s .4s;
+}   
+
+.modal__container{
+    margin: auto;
+    width: 90%;
+    max-width: 70rem;
+    max-height: 90%;
+    background-color: #fff;
+    border-radius: 1rem;
+    padding: 3rem;
+    display: grid;
+    gap: 2rem;
+    place-items: center;
+    grid-auto-columns: 100%;
+    transform: var(--transform);
+    transition: var(--transition);
+}
+
+.modal__title {
+    font-size: 3.5rem;
+    font-family: Montserrat-Semibold;
+}
+
+.modal__paragraph {
+    font-family: Montserrat-Regular;
+    font-size: 2rem;
+    margin: 2rem 0;
+}
+.modal__divider{
+    margin:  2rem 0;
+    border: #ccc 0.01rem solid;
+    width: 100%;
+}
+.modal__body{
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: space-around;
+}
+
+.modal__img {
+    width: 90%;
+    max-width: 40rem;
+}
+
+.modal__button{
+    cursor: pointer;
+    font-family: Montserrat-Semibold;
+    font-size: 2rem;
+    text-decoration: none;
+    color: #fff;
+    background-color: #50a6f2;
+    padding: 1.5rem 3rem;
+    border: 0.1rem solid;
+    border-radius: 1rem;
+    font-weight: 30rem;
+    transition: background-color .3s;
+}
+.modal__button:hover:enabled {
+    color: #50a6f2;
+    background-color: #fff;
+}
+.modal__button:disabled {
+    color: #fff;
+    background-color: #ccc;
+    cursor: auto;
+}
+
+
+.modal__close{
+    cursor: pointer;
+    font-family: Montserrat-Semibold;
+    font-size: 2rem;
+    text-decoration: none;
+    color: #fff;
+    background-color: #f26250;
+    padding: 1.5rem 3rem;
+    border: 0.1rem solid;
+    border-radius: 1rem;
+    font-weight: 30rem;
+    transition: background-color .3s;
+}
+.modal__close:hover{
+    color: #f26250;
+    background-color: #fff;
+}

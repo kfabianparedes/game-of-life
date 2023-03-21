@@ -1,0 +1,18 @@
+@import './fonts.css';
+@import './container/style.css';
+
+html {
+    font-size: 62.5%;  /* 1REM = 10px */
+}
+
+*, *:before, *:after {
+    box-sizing: border-box;
+    margin: 0;
+}
+
+body{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #9dd6ff;
+}

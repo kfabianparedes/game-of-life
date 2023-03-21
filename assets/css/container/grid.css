@@ -1,0 +1,21 @@
+.cuadricula {
+    width: 108rem;
+    height: 108rem;
+    display: flex;
+    flex-wrap: wrap;
+    border-radius: 1rem;
+}
+
+.celda {
+    border-radius: 0.5rem;
+    border: 0.1rem solid #000;
+    width: 2.16rem; /* 108rem / 5rem (50px) */
+    height: 2.16rem;
+}
+
+.celda--active{
+    background-color: #50a6f2;
+}
+.celda--inactive{
+    background-color: #fff;
+}
