@@ -1,11 +1,9 @@
 import { Celda } from './celda.js';
 
 const tamanioCelda = 50;
-let divCeldasCuadrilla = [];
+const gameMode = { RANDOM: 1 , CUSTOM : 2}
+let mode;
 let matrizDeCeldas = [];
-let listaDeClasesCelda = [];
-let indiceDeCeldaEn = 0;
-let inGame = false;
 let stopGame = false;
 
 const main = () => {
@@ -13,176 +11,167 @@ const main = () => {
         if(stopGame){
             return;
         }else{
-            aplicarReglas();
-            pintarCeldasEnPantalla();
+            if(mode == gameMode.CUSTOM){
+                aplicarReglas();
+                pintarCeldasEnPantalla();
+            }else{
+                pintarCeldasEnPantalla();
+                aplicarReglas();
+            }
             main();
         }
-    },1000);
+    },500);
 }
 
-//Limpiar listas o matrices
-const limpiarMatrizDeCeldas = () => {
-    matrizDeCeldas = new Array(tamanioCelda).fill("").map(() => Array(tamanioCelda).fill(""));
-}
-
-const inicializarCeldasAleatorias = () => {
-    console.log('matriz de celdas: ',matrizDeCeldas)
-    matrizDeCeldas.forEach((filas, indiceX) => {
-        filas.forEach((_columnas, indiceY) => {
-            matrizDeCeldas[indiceX][indiceY] = Math.random() < 0.5 ? false: true ;
-            const celdaClase = new Celda(matrizDeCeldas[indiceX][indiceY], indiceDeCeldaEn , indiceX,indiceY);
-            indiceDeCeldaEn++;
-            listaDeClasesCelda.push(celdaClase);
-        })
-    });
-}
-
-export const crearCeldasEnMatriz =  ( ) => {
+const inicializarCeldas = ( tipoDeJuego ) => {
     /*
     * Crear celdas de una matriz cuadrada de tamaño: 'tamanioMatriz'
     */
-    // let divCuadricula = document.querySelector('.cuadricula');
-    // let divCuadricula = null;
-    // let divCuadricula;
-    let divCuadricula = document.querySelector('.cuadricula');
-    if(divCuadricula == null || divCuadricula == undefined){
-        divCuadricula = document.createElement('div');
-        divCuadricula.className = 'cuadricula';//classList.add('cuadricula'); 
-    }
-    console.log('clase nueva: ' , divCuadricula);
+    const divCuadricula = document.querySelector('.cuadricula');
     const tamanioMatriz = tamanioCelda;
-    for(let i=0 ; i< tamanioMatriz ; i++){
-        for(let j= 0 ; j < tamanioMatriz ; j++){
-            
-            const divCelda = document.createElement('div');
+    for(let indiceX=0 ; indiceX< tamanioMatriz ; indiceX++){
+        const columnasMatriz = [];
+        for(let indiceY= 0 ; indiceY < tamanioMatriz ; indiceY++){
             /*
             * Agregar clase celda al div dentro de la cuadrilla 
             */
-            divCelda.classList.add('celda'); 
-            divCuadricula.append(divCelda);
+            let celdaState = false;
+            if(tipoDeJuego === gameMode.RANDOM){
+                celdaState = Math.random() < 0.5 ? false: true ;
+            }
+            const celdaElement = newCelda();
+            celdaElement.onclick = x => changeState(x, indiceX, indiceY);
+            const celdaClase = new Celda(celdaState, indiceX, indiceY, celdaElement);
+            divCuadricula.append(celdaElement);
+            columnasMatriz.push(celdaClase);
         }
+        matrizDeCeldas.push(columnasMatriz);
+
     }
-    console.log('celdas? ',document.querySelectorAll('.celda'));
     stopGame = false;
 }
 
+const newCelda = () =>{
+    const celdaElement = document.createElement('div');
+    celdaElement.classList.add('celda'); 
+    celdaElement.classList.remove('celda--active');
+    return celdaElement;
+}
+
+const changeState = (event, indiceX, indiceY) => {
+    
+    matrizDeCeldas[indiceX][indiceY].celdaPintada = matrizDeCeldas[indiceX][indiceY].celdaPintada?false:true;
+
+    const cell = event.target || event;
+    if(cell.classList.contains('celda--active')){
+        cell.classList.remove('celda--active');
+    }else{
+        cell.classList.add('celda--active');
+    }
+}
+
 const pintarCeldasEnPantalla = () => {
-    const divCuadricula = document.querySelector('.cuadricula');
-    console.log(divCuadricula);
-    const divCeldasCuadrilla = document.querySelectorAll('.celda');
-    listaDeClasesCelda.forEach((celda)=> {
-        const indice = celda.numeroCelda;
-        const celdaDOM = divCeldasCuadrilla[indice];
-        console.log(celdaDOM);
-        if(celda.celdaPintada ){
-            celdaDOM.classList.add('celda--active');
-            celdaDOM.classList.remove('celda--inactive');
-        }else{
-            celdaDOM.classList.add('celda--inactive');
-            celdaDOM.classList.remove('celda--active');
-        }
+    matrizDeCeldas.forEach((filas, coordX, _matriz) => {
+        filas.forEach((_columnas, coordY) => {
+            if(matrizDeCeldas[coordX][coordY].celdaPintada ){
+                matrizDeCeldas[coordX][coordY].element.classList.add('celda--active');
+            }
+            else{
+                matrizDeCeldas[coordX][coordY].element.classList.remove('celda--active');
+            }
+        });
     });
 }
 
 const aplicarReglas = () => {
-    // console.log('matrizDeCeldas antes',matrizDeCeldas);
-    let matrizDeCeldasAuxiliares = new Array(tamanioCelda).fill("").map(() => Array(tamanioCelda).fill(false));
-    // console.log('matrizDeCeldas matrizDeCeldasAuxiliares',matrizDeCeldasAuxiliares);
-    let contadorMatriz = 0;
     matrizDeCeldas.forEach((filas, coordX, _matriz) => {
         filas.forEach((_columnas, coordY) => {
             let contadorVecinos = 0;
             //1
             if(coordX>0 && coordY>0){
-                if(matrizDeCeldas[coordX-1][coordY-1]) {
+                if(matrizDeCeldas[coordX-1][coordY-1].celdaPintada) {
                     contadorVecinos++;
                 }
             }
             //2
-            if(coordY > 0)
-                if(matrizDeCeldas[coordX][coordY-1])
+            if(coordY > 0){
+                if(matrizDeCeldas[coordX][coordY-1].celdaPintada){
                     contadorVecinos++;
-
+                }
+            }
             //3
-            if(coordX < tamanioCelda - 1 && coordY > 0)
-                if(matrizDeCeldas[coordX + 1][coordY - 1])
+            if(coordX < tamanioCelda - 1 && coordY > 0){
+                if(matrizDeCeldas[coordX + 1][coordY - 1].celdaPintada){
                     contadorVecinos++;
-
+                }
+            }
             //4
-            if(coordX > 0)
-                if(matrizDeCeldas[coordX - 1][coordY])
+            if(coordX > 0){
+                if(matrizDeCeldas[coordX - 1][coordY].celdaPintada){
                     contadorVecinos++;
-            
+                }
+            }
             //5
-            if(coordX < tamanioCelda - 1)
-                if(matrizDeCeldas[coordX + 1][coordY])
+            if(coordX < tamanioCelda - 1){
+                if(matrizDeCeldas[coordX + 1][coordY].celdaPintada){
                     contadorVecinos++;
-            
+                }
+            }
             //6
-            if(coordX > 0 && coordY < tamanioCelda - 1)
-                if(matrizDeCeldas[coordX - 1][coordY + 1])
+            if(coordX > 0 && coordY < tamanioCelda - 1){
+                if(matrizDeCeldas[coordX - 1][coordY + 1].celdaPintada){
                     contadorVecinos++;
-
+                }
+            }
             //7
-            if(coordY < tamanioCelda - 1)
-                if(matrizDeCeldas[coordX][coordY + 1])
+            if(coordY < tamanioCelda - 1){
+                if(matrizDeCeldas[coordX][coordY + 1].celdaPintada){
                     contadorVecinos++;
-
+                }
+            }
             //8
-            if(coordX < tamanioCelda - 1 && coordY < tamanioCelda - 1)
-                if(matrizDeCeldas[coordX + 1][coordY + 1])
+            if(coordX < tamanioCelda - 1 && coordY < tamanioCelda - 1){
+                if(matrizDeCeldas[coordX + 1][coordY + 1].celdaPintada){
                     contadorVecinos++;
-            
-            if(matrizDeCeldas[coordX][coordY]){
-                matrizDeCeldasAuxiliares[coordX][coordY] = (contadorVecinos == 2 || contadorVecinos == 3) ? true : false;
-                listaDeClasesCelda[contadorMatriz].celdaPintada = (contadorVecinos == 2 || contadorVecinos == 3) ? true : false;
-            }else{
-                matrizDeCeldasAuxiliares[coordX][coordY] = contadorVecinos == 3 ? true : false;
-                listaDeClasesCelda[contadorMatriz].celdaPintada = contadorVecinos == 3 ? true : false;
+                }
             }
 
-            contadorMatriz++;
+            if(matrizDeCeldas[coordX][coordY].celdaPintada){
+                matrizDeCeldas[coordX][coordY].celdaPintada = (contadorVecinos == 2 || contadorVecinos == 3) ? true : false;
+            }else{
+                matrizDeCeldas[coordX][coordY].celdaPintada = contadorVecinos == 3 ? true : false;
+            }
         })
     });
-    matrizDeCeldas = [...matrizDeCeldasAuxiliares];
-
-}
-
-const limpiarCuadrilla = ( list ) =>{
-    list.replaceChildren();
-    console.log(list); // Ver eliminados
 }
 
 export const reiniciarJuego = () => {
     console.log('restart');
     stopGame = true;
     const cuadrilla = document.querySelector('.cuadricula');
-    const cuadrillaContainer = document.querySelector('.container__grid__body');
-    cuadrillaContainer.remove();
+    cuadrilla.innerHTML = '';
+    matrizDeCeldas = [];
     main();
 }
 
-export const iniciarJuego = () =>  {
-    console.log('start');
-    main();
-    // limpiarCeldasDelTablero();
-    // // if( !inGame ){
-    //     inGame = true;
-    //     stopGame = false;
-    //     main();
-    // // }else{
-    //     // reiniciarJuego();
-    // // }
-    
+export const startCustomGame = () =>  {
+    console.log('start custom game');
+    mode = gameMode.CUSTOM;
+    inicializarCeldas(mode);
+    setTimeout(function () {
+        console.log('esperar 5 sec')
+        main();
+    }, 5000);
 }
 
 export const startRandomGame = () => {
     console.log('start random game');
-    limpiarMatrizDeCeldas();
-    inicializarCeldasAleatorias();
-    crearCeldasEnMatriz();
+    mode = gameMode.RANDOM;
+    inicializarCeldas(mode);
     main();
 }
+
+
 
 
 

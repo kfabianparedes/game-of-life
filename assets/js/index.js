@@ -1,5 +1,5 @@
-import { iniciarJuego , reiniciarJuego, startRandomGame } from './game.js';
-import { abrirModal , cerrarModal } from './modal.js';
+import { startCustomGame , reiniciarJuego, startRandomGame } from './game.js';
+import { abrirModal , cerrarModal, playModal, cerrarPlayModal } from './modal.js';
 
     // Referencias del HTML
     const btnStart  = document.querySelector('#btnStart');
@@ -11,6 +11,10 @@ import { abrirModal , cerrarModal } from './modal.js';
     const btnNewCustomGame = document.querySelector('#start-custom-game');
     const btnCloseModalStart   = document.querySelector('#close-modal-start');
     const btnCloseModalRules   = document.querySelector('#close-modal-rules');
+    const btnCloseCustomGame   = document.querySelector('#close-modal-custom');
+
+    //
+    const btnStartPlay = document.querySelector('#start-play');
 
     /*
     * 1. Variables de inicio del juego
@@ -29,7 +33,8 @@ import { abrirModal , cerrarModal } from './modal.js';
         btnRestart.disabled = true;
     });
 
-    btnRestart.addEventListener('click' , () => {
+    btnRestart.addEventListener('click' , (event) => {
+        event.preventDefault();
         reiniciarJuego();
         btnStart.disabled = false;
     });
@@ -58,7 +63,7 @@ import { abrirModal , cerrarModal } from './modal.js';
         cerrarModal('#modal-start');
         btnStart.disabled = true;
         btnRestart.disabled = false;
-        iniciarJuego();
+        playModal('#modal-play');
     })
 
     btnCloseModalStart.addEventListener('click', (event)=>{
@@ -70,4 +75,21 @@ import { abrirModal , cerrarModal } from './modal.js';
         event.preventDefault();
         cerrarModal('#modal-rules');
     })
+
+    btnCloseCustomGame.addEventListener('click', (event)=>{
+        event.preventDefault();
+        reiniciarJuego();
+        btnStart.disabled = false;
+        cerrarPlayModal('#modal-play');
+    })
+
+    // Start Custome game
+    btnStartPlay.addEventListener('click', (event)=>{
+        event.preventDefault();
+        btnStart.disabled = false;
+        cerrarPlayModal('#modal-play');
+        startCustomGame();
+    })
+
+
 
